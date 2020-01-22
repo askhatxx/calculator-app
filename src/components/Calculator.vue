@@ -1,13 +1,18 @@
 <template>
   <div class="calculator">
     <div class="display">
-      <div class="answer">{{ answer ? `Ans = ${answerNumber}` : `` }}</div>
+      <div class="answer">{{ answer !== null ? `Ans = ${answerNumber}` : `` }}</div>
       <div class="current" :class='{delete: isOperator}'>{{ current }}</div>
     </div>
     <button @click='backspace' class="btn keys">←</button>
     <button @click='allClear' class="btn keys">AC</button>
     <button @click='addSign' class="btn keys">+/-</button>
-    <button class="btn keys">Copy</button>
+    <button 
+      @click='copy' 
+      class="btn keys copy" 
+      :class='{copied: copyStatus === `Copied`, error: copyStatus === `Error`}'>
+        {{ copyStatus }}
+    </button>
     <button @click='addSymbol(`7`)' class="btn">7</button>
     <button @click='addSymbol(`8`)' class="btn">8</button>
     <button @click='addSymbol(`9`)' class="btn">9</button>
@@ -35,6 +40,7 @@ export default {
       current: '0',
       operator: false,
       isOperator: false,
+      copyStatus: 'Copy'
     }
   },
   computed: {
@@ -42,7 +48,7 @@ export default {
       return Number(this.current);
     },
     answerNumber() {
-      return Number(this.answer.toFixed(16));
+      return this.answer === null ? null : Number(this.answer.toFixed(12));
     }
   },
   methods: {
@@ -105,6 +111,20 @@ export default {
         this.current = `${this.answerNumber}`;
         this.answer = null;
       }
+    },
+    copy() {
+      navigator.clipboard.writeText(this.current)
+        .then(() => {
+          this.copyStatus = 'Copied';
+        })
+        .catch(() => {
+          this.copyStatus = 'Error';
+        })
+        .finally(() => {
+          setTimeout(() => {
+            this.copyStatus = 'Copy';
+          }, 2000);
+        });
     }
   }
 }
@@ -213,5 +233,16 @@ export default {
 .dot {
   font-size: 18px;
   font-weight: bold;
+}
+.copy {
+  transition: .5s;
+}
+.copy.copied {
+  background: #82e9b4;
+  border: 1px solid #82e9b4;
+}
+.copy.error {
+  background: #f7b2ab;
+  border: 1px solid #f7b2ab;
 }
 </style>
