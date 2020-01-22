@@ -1,8 +1,8 @@
 <template>
   <div class="calculator">
     <div class="display">
-      <div class="answer">{{ answer ? `Ans = ${answer}` : `` }}</div>
-      <div class="current">{{ current }}</div>
+      <div class="answer">{{ answer ? `Ans = ${answerNumber}` : `` }}</div>
+      <div class="current" :class='{delete: isOperator}'>{{ current }}</div>
     </div>
     <button @click='backspace' class="btn keys">←</button>
     <button @click='allClear' class="btn keys">AC</button>
@@ -11,19 +11,19 @@
     <button @click='addSymbol(`7`)' class="btn">7</button>
     <button @click='addSymbol(`8`)' class="btn">8</button>
     <button @click='addSymbol(`9`)' class="btn">9</button>
-    <button class="btn operator">÷</button>
+    <button @click='division' class="btn operator">÷</button>
     <button @click='addSymbol(`4`)' class="btn">4</button>
     <button @click='addSymbol(`5`)' class="btn">5</button>
     <button @click='addSymbol(`6`)' class="btn">6</button>
-    <button class="btn operator">×</button>
+    <button @click='multiply' class="btn operator">×</button>
     <button @click='addSymbol(`1`)' class="btn">1</button>
     <button @click='addSymbol(`2`)' class="btn">2</button>
     <button @click='addSymbol(`3`)' class="btn">3</button>
-    <button class="btn operator">−</button>
+    <button @click='minus' class="btn operator">−</button>
     <button @click='addSymbol(`0`)' class="btn">0</button>
     <button @click='addSymbol(`.`)' class="btn dot">.</button>
-    <button class="btn equal">=</button>
-    <button class="btn operator">+</button>
+    <button @click='equal' class="btn equal">=</button>
+    <button @click='plus' class="btn operator">+</button>
   </div>
 </template>
 
@@ -31,13 +31,18 @@
 export default {
   data() {
     return {
-      answer: '-652',
+      answer: null,
       current: '0',
+      operator: false,
+      isOperator: false,
     }
   },
   computed: {
     currentNumber() {
       return Number(this.current);
+    },
+    answerNumber() {
+      return Number(this.answer.toFixed(16));
     }
   },
   methods: {
@@ -54,8 +59,13 @@ export default {
       this.current = this.current.charAt(0) === '-' ? this.current.slice(1) : `-${this.current}`;
     },
     addSymbol(symbol) {
+      if (this.isOperator) this.current = '0';
+      this.isOperator = false;
+
+      if (this.current.length >= 15) return;
       if (symbol === '0' && (this.current === '0' || this.current === '-0')) return;
       if (symbol === '.' && this.current.includes('.')) return;
+
       if (this.current === '0' || this.current === '-0') {
         if (symbol !== '.') {
           this.current = `${this.current.slice(0, -1)}${symbol}`;
@@ -63,6 +73,38 @@ export default {
         }
       }
       this.current = `${this.current}${symbol}`;
+    },
+    operatorRun() {
+      if (this.answer === null) {
+        this.answer = this.currentNumber;
+      }
+      else {
+        this.answer = this.operator(this.answerNumber, this.currentNumber);
+      }
+      this.isOperator = true;
+    },
+    plus() {
+      this.operatorRun();
+      this.operator = (a, b) => a + b;
+    },
+    minus() {
+      this.operatorRun();
+      this.operator = (a, b) => a - b;
+    },
+    multiply() {
+      this.operatorRun();
+      this.operator = (a, b) => a * b;
+    },
+    division() {
+      this.operatorRun();
+      this.operator = (a, b) => a / b;
+    },
+    equal() {
+      if (this.answer !== null) {
+        this.answer = this.operator(this.answerNumber, this.currentNumber);
+        this.current = `${this.answerNumber}`;
+        this.answer = null;
+      }
     }
   }
 }
@@ -101,6 +143,9 @@ export default {
   height: 34px;
   font-weight: normal;
   user-select: text;
+}
+.current.delete {
+  color: #afb1b7;
 }
 .btn {
   background: #f1f3f4;
