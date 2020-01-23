@@ -1,6 +1,12 @@
-# calculator-app
+This project uses Vue.js.
 
-## Project setup
+Demo: [https://askhatxx.github.io/calculator-app/](https://askhatxx.github.io/calculator-app/)
+
+**Описание**
+
+Данное веб-приложение является простым калькулятором. Имеется кнопка "Копировать" для удобства копирования результата в буфер обмена.
+
+### Project setup
 ```
 npm install
 ```
@@ -19,6 +25,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
