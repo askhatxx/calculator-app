@@ -8,9 +8,10 @@
     <button @click='allClear' class="btn keys">AC</button>
     <button @click='addSign' class="btn keys">+/-</button>
     <button 
-      @click='copy' 
-      class="btn keys copy" 
-      :class='{copied: copyStatus === `Copied`, error: copyStatus === `Error`}'>
+      @click='copy'
+      class="btn keys copy"
+      :class='{copied: copyStatus === `Copied`, error: copyStatus === `Error`}'
+    >
         {{ copyStatus }}
     </button>
     <button @click='addSymbol(`7`)' class="btn">7</button>
@@ -132,15 +133,9 @@ export default {
 
 <style scoped>
 .calculator {
-  background: #fff;
-  width: 90%;
-  max-width: 370px;
-  border: 1px solid #dfe1e5;
-  border-radius: 8px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 8px;
-  padding: 16px;
 }
 .display {
   grid-column: 1 / 5;
