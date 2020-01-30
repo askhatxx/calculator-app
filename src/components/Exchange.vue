@@ -11,7 +11,7 @@
             :key='rate'
             :value='rate'
           >
-              {{ rate }}
+              {{ rate }} - {{ currencyName[rate] }}
           </option>
         </select>
       </div>
@@ -24,7 +24,7 @@
             :key='rate'
             :value='rate'
           >
-              {{ rate }}
+              {{ rate }} - {{ currencyName[rate] }}
           </option>
         </select>
       </div>
@@ -38,11 +38,12 @@ export default {
     return {
       currencyOne: '0',
       currencyTwo: '0',
-      selctedOne: 'RUB',
+      selctedOne: 'USD',
       selctedTwo: 'KZT',
       apiResult: null,
       apiError: false,
-      focusInput: null
+      focusInput: null,
+      currencyName: currencyName
     }
   },
   created() {
@@ -60,18 +61,18 @@ export default {
   },
   watch: {
     currencyOne() {
-      const currencyOne = this.validate(this.currencyOne);
-      const inBase = Number(currencyOne) / this.apiResult.rates[this.selctedOne];
-      const currencyTwo = (inBase * this.apiResult.rates[this.selctedTwo]).toFixed(2);
-      this.currencyOne = currencyOne;
-      if (this.focusInput === 1) this.currencyTwo = currencyTwo;
+      this.currencyOne = this.validate(this.currencyOne);
+      if (this.focusInput === 1) this.calculateOne();
     },
     currencyTwo() {
-      const currencyTwo = this.validate(this.currencyTwo);
-      const inBase = Number(currencyTwo) / this.apiResult.rates[this.selctedTwo];
-      const currencyOne = (inBase * this.apiResult.rates[this.selctedOne]).toFixed(2);
-      this.currencyTwo = currencyTwo;
-      if (this.focusInput === 2) this.currencyOne = currencyOne;
+      this.currencyTwo = this.validate(this.currencyTwo);
+      if (this.focusInput === 2) this.calculateTwo();
+    },
+    selctedOne() {
+      this.calculateOne();
+    },
+    selctedTwo() {
+      this.calculateOne();
     }
   },
   computed: {
@@ -81,6 +82,14 @@ export default {
     }
   },
   methods: {
+    calculateOne() {
+      const inBase = Number(this.currencyOne) / this.apiResult.rates[this.selctedOne];
+      this.currencyTwo = (inBase * this.apiResult.rates[this.selctedTwo]).toFixed(2);
+    },
+    calculateTwo() {
+      const inBase = Number(this.currencyTwo) / this.apiResult.rates[this.selctedTwo];
+      this.currencyOne = (inBase * this.apiResult.rates[this.selctedOne]).toFixed(2);
+    },
     validate(str) {
       return [...str].reduce((result, char) => {
         if ('0123456789'.includes(char)) return `${result}${char}`;
@@ -89,8 +98,62 @@ export default {
       }, '');
     },
     currencyReverse() {
-      [this.selctedOne, this.selctedTwo] = [this.selctedTwo, this.selctedOne]
+      [this.selctedOne, this.selctedTwo] = [this.selctedTwo, this.selctedOne];
     }
   }
 }
+
+const currencyName = {
+"AED":"UAE Dirham",
+"ARS":"Argentine Peso",
+"AUD":"Australian Dollar",
+"BGN":"Bulgarian Lev",
+"BRL":"Brazilian Real",
+"BSD":"Bahamian Dollar",
+"CAD":"Canadian Dollar",
+"CHF":"Swiss Franc",
+"CLP":"Chilean Peso",
+"CNY":"Chinese Renminbi",
+"COP":"Colombian Peso",
+"CZK":"Czech Koruna",
+"DKK":"Danish Krone",
+"DOP":"Dominican Peso",
+"EGP":"Egyptian Pound",
+"EUR":"Euro",
+"FJD":"Fiji Dollar",
+"GBP":"Pound Sterling",
+"GTQ":"Guatemalan Quetzal",
+"HKD":"Hong Kong Dollar",
+"HRK":"Croatian Kuna",
+"HUF":"Hungarian Forint",
+"IDR":"Indonesian Rupiah",
+"ILS":"Israeli Shekel",
+"INR":"Indian Rupee",
+"ISK":"Icelandic Krona",
+"JPY":"Japanese Yen",
+"KRW":"South Korean Won",
+"KZT":"Kazakhstani Tenge",
+"MXN":"Mexican Peso",
+"MYR":"Malaysian Ringgit",
+"NOK":"Norwegian Krone",
+"NZD":"New Zealand Dollar",
+"PAB":"Panamanian Balboa",
+"PEN":"Peruvian Nuevo Sol",
+"PHP":"Philippine Peso",
+"PKR":"Pakistani Rupee",
+"PLN":"Polish Zloty",
+"PYG":"Paraguayan Guarani",
+"RON":"Romanian Leu",
+"RUB":"Russian Ruble",
+"SAR":"Saudi Riyal",
+"SEK":"Swedish Krona",
+"SGD":"Singapore Dollar",
+"THB":"Thai Baht",
+"TRY":"Turkish Lira",
+"TWD":"New Taiwan Dollar",
+"UAH":"Ukrainian Hryvnia",
+"USD":"US Dollar",
+"UYU":"Uruguayan Peso",
+"ZAR":"South African Rand"
+};
 </script>
