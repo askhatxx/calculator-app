@@ -3,30 +3,40 @@
     <div v-if='apiError'>Error</div>
     <div v-else-if='!apiResult'>Loading...</div>
     <div v-else>
-      <div class="currency-one">
-        <input v-model='currencyOne' @focus='focusInput = 1'/>
-        <select v-model='selctedOne'>
-          <option 
-            v-for='rate in rates'
-            :key='rate'
-            :value='rate'
-          >
-              {{ rate }} - {{ currencyName[rate] }}
-          </option>
-        </select>
+      <div class="currency currency-one" :class='focusInput === 1 ? validateError : ""'>
+        <div class="currency-input">
+          <input v-model='currencyOne' @focus='focusInput = 1' @blur='validateError = ""'/>
+        </div>
+        <div class="currency-select">
+          <select v-model='selctedOne'>
+            <option 
+              v-for='rate in rates'
+              :key='rate'
+              :value='rate'
+            >
+                {{ rate }} - {{ currencyName[rate] }}
+            </option>
+          </select>
+        </div>
       </div>
-      <div @click='currencyReverse'>x</div>
-      <div class="currency-two">
-        <input v-model='currencyTwo' @focus='focusInput = 2'/>
-        <select v-model='selctedTwo'>
-          <option 
-            v-for='rate in rates'
-            :key='rate'
-            :value='rate'
-          >
-              {{ rate }} - {{ currencyName[rate] }}
-          </option>
-        </select>
+      <div class="reverse">
+        <button @click='currencyReverse' class="btn-reverse">←</button>
+      </div>
+      <div class="currency currency-two" :class='focusInput === 2 ? validateError : ""'>
+        <div class="currency-input">
+          <input v-model='currencyTwo' @focus='focusInput = 2' @blur='validateError = ""'/>
+        </div>
+        <div class="currency-select">
+          <select v-model='selctedTwo'>
+            <option 
+              v-for='rate in rates'
+              :key='rate'
+              :value='rate'
+            >
+                {{ rate }} - {{ currencyName[rate] }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -39,10 +49,11 @@ export default {
       currencyOne: '0',
       currencyTwo: '0',
       selctedOne: 'USD',
-      selctedTwo: 'KZT',
+      selctedTwo: 'RUB',
       apiResult: null,
       apiError: false,
       focusInput: null,
+      validateError: '',
       currencyName: currencyName
     }
   },
@@ -94,6 +105,8 @@ export default {
       return [...str].reduce((result, char) => {
         if ('0123456789'.includes(char)) return `${result}${char}`;
         if ('.,'.includes(char) && !result.includes('.')) return `${result}.`;
+        this.validateError = this.validateError === '' ? 'err1' : 
+          this.validateError === 'err1' ? 'err2' : 'err1';
         return result;
       }, '');
     },
@@ -157,3 +170,91 @@ const currencyName = {
 "ZAR":"South African Rand"
 };
 </script>
+
+<style scoped>
+.exchange {
+  margin: 10px 0px;
+}
+.currency {
+  display: flex;
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+}
+.currency-input {
+  flex-grow: 1;
+}
+.currency-select {
+  width: 150px;
+}
+.currency input {
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  font-family: inherit;
+  padding: 8px;
+  border: none;
+  background: none;
+  outline: none;
+}
+.currency select {
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  font-family: inherit;
+  padding-left: 4px;
+  border: none;
+  border-left: 1px solid #ebebeb;
+  background: none;
+  outline: none;
+}
+.reverse {
+  text-align: center;
+  margin: 12px 0px;
+}
+.btn-reverse {
+  background: #dfe1e5;
+  border: 1px solid #dfe1e5;
+  border-radius: 4px;
+  font-family: inherit;
+  color: #202124;
+  line-height: 34px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  width: 78px;
+}
+.btn-reverse:hover {
+  background: #d7d9dd;
+  border-color: #d7d9dd;
+}
+.btn-reverse:active {
+  background: #d7d9dd;
+  border-color: #9aa0a6;
+}
+.err1 {
+  animation-duration: 1s;
+  animation-name: erroranim1;
+}
+.err2 {
+  animation-duration: 1s;
+  animation-name: erroranim2;
+}
+@keyframes erroranim1 {
+  0% {
+    background: rgba(255, 0, 0, .25)
+  }
+  100% {
+    background: rgba(255, 0, 0, .0)
+  }
+}
+@keyframes erroranim2 {
+  0% {
+    background: rgba(255, 0, 0, .25)
+  }
+  100% {
+    background: rgba(255, 0, 0, .0)
+  }
+}
+</style>
