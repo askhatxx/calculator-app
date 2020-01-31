@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       tabs: ['Calculator', 'Exchange'],
-      activeTab: 1
+      activeTab: 0
     }
   },
   components: {

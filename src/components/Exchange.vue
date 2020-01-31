@@ -1,7 +1,7 @@
 <template>
   <div class="exchange">
-    <div v-if='apiError'>Error</div>
-    <div v-else-if='!apiResult'>Loading...</div>
+    <div v-if='apiError' class="api-error">Error</div>
+    <div v-else-if='!apiResult' class="loading">Loading...</div>
     <div v-else>
       <div class="currency currency-one" :class='focusInput === 1 ? validateError : ""'>
         <div class="currency-input">
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="reverse">
-        <button @click='currencyReverse' class="btn-reverse">←</button>
+        <button @click='currencyReverse' class="btn-reverse">↔</button>
       </div>
       <div class="currency currency-two" :class='focusInput === 2 ? validateError : ""'>
         <div class="currency-input">
@@ -173,7 +173,7 @@ const currencyName = {
 
 <style scoped>
 .exchange {
-  margin: 10px 0px;
+  margin: 20px 0px;
 }
 .currency {
   display: flex;
@@ -184,12 +184,12 @@ const currencyName = {
   flex-grow: 1;
 }
 .currency-select {
-  width: 150px;
+  width: 120px;
 }
 .currency input {
   width: 100%;
   height: 100%;
-  font-size: 18px;
+  font-size: 20px;
   font-family: inherit;
   padding: 8px;
   border: none;
@@ -233,6 +233,18 @@ const currencyName = {
   background: #d7d9dd;
   border-color: #9aa0a6;
 }
+.api-error {
+  background: rgba(255, 0, 0, .25);
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 18px;
+}
+.loading {
+  background: #dfe1e5;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 18px;
+}
 .err1 {
   animation-duration: 1s;
   animation-name: erroranim1;
@@ -243,18 +255,18 @@ const currencyName = {
 }
 @keyframes erroranim1 {
   0% {
-    background: rgba(255, 0, 0, .25)
+    background: rgba(255, 0, 0, .25);
   }
   100% {
-    background: rgba(255, 0, 0, .0)
+    background: rgba(255, 0, 0, .0);
   }
 }
 @keyframes erroranim2 {
   0% {
-    background: rgba(255, 0, 0, .25)
+    background: rgba(255, 0, 0, .25);
   }
   100% {
-    background: rgba(255, 0, 0, .0)
+    background: rgba(255, 0, 0, .0);
   }
 }
 </style>
